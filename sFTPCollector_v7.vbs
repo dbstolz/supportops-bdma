@@ -171,7 +171,7 @@ Dim i, j, intCount, arrAccount, arrFolders, strLine, strName, boolFound, intFiel
 	arrFolders = Split(strPath, "\")
 '	Call PrintArray (arrFolders)
 	DLogMsg DL_Debug_Some, "LookupAccount: Path depth is: " & CStr(UBound(arrFolders))
-	For i = UBound(arrFolders) To 0 Step -1
+	For i = UBound(arrFolders) To 0 Step - 1
 		DLogMsg DL_Debug_Some, "LookupAccount: For: Directory to search is: " & arrFolders(i)
 		intCount = 1
 		For Each strLine in arrAccountList
@@ -405,19 +405,19 @@ Dim intAt, intDot, strSFCompressedFile, strFileName, strFiles, strSFFrom, strSFT
 
 '	Add the sFTP Username and Account name information from the lookup file
 	strSFBody = strSFBody & "sFTP Username: " & arrFieldList(0) & strNL
-	strSFBody = strSFBody & "Account Name: " & arrFieldList(1) & strNL
+'	strSFBody = strSFBody & "Account Name: " & arrFieldList(1) & strNL
 
 '	Next, we set the email From address. This differs between Barcode and DataManager orders, which have an Account Holder and Data Contact in SFDC
 '	We will use this to also add the DataManager Data Contact person's name and email address
-	Select Case strApplication
+	Select Case LCase(strApplication)
 '		We don't have a single point of contact for barcode orders, so use the default email address
-		Case "Barcode"
+		Case "barcode"
 			DLogMsg DL_Debug_Some, "SendFiles: Case: Barcode file(s)."
 			strSFFrom = MIGetTaskParam("DI_Email_From")
-		Case "DataManager"
+		Case "datamanager"
 			DLogMsg DL_Debug_Some, "SendFiles: Case: DataManager file(s)."
-			strSFBody = strSFBody & "DataManager Data Contact name: " & arrFieldList(2) & strNL
-			strSFBody = strSFBody & "DataManager Data Contact email: " & arrFieldList(3) & strNL
+			strSFBody = strSFBody & "Account Holder name: " & arrFieldList(2) & strNL
+			strSFBody = strSFBody & "Account Holder email: " & arrFieldList(3) & strNL
 '			Perform simple format validation of retrieved email address to allow CDO 'from' field to be set
 			intAt = InStr(arrFieldList(3),"@")
 			intDot = InStrRev(arrFieldList(3),".")
